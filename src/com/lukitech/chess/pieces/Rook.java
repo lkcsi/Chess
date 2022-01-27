@@ -1,5 +1,7 @@
 package com.lukitech.chess.pieces;
 
+import com.lukitech.chess.board.Position;
+
 public class Rook extends Piece {
 
    public Rook(Color color) {
@@ -11,4 +13,12 @@ public class Rook extends Piece {
       return 'R';
    }
    
+   @Override
+   public boolean isLegalMove(Position position) {
+      if(position.equals(getPosition()))
+         return false;
+
+      return true;
+   }
+
 }
