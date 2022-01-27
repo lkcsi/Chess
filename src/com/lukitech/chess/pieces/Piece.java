@@ -26,6 +26,8 @@ public abstract class Piece
 	}
 
    public abstract char getLetter();
+
+   public abstract boolean isLegalMove(Position position);
 	
    public Color getColor(){
       return color;
