@@ -12,8 +12,7 @@ public class ConsolePrinter implements Printer{
       
       
       for(int row = 8; row >= 1; row--){
-         for(int i = 0; i < 8; i++){        
-            char column = (char)(i+97);
+         for(int column = 1; column < 9; column++){        
             var position = new Position(column, row);
             String field = "   ";
 

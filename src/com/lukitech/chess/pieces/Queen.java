@@ -1,6 +1,9 @@
 package com.lukitech.chess.pieces;
 
-import com.lukitech.chess.board.Position;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.lukitech.chess.board.Direction;
 
 public class Queen extends Piece {
 
@@ -12,14 +15,15 @@ public class Queen extends Piece {
    public char getLetter() {
       return 'Q';
    }
-   
 
    @Override
-   public boolean isLegalMove(Position position) {
-      if(position.equals(getPosition()))
-         return false;
-
-      return true;
+   public List<Direction> getDirections() {
+      var directions = new ArrayList<Direction>();
+      directions.addAll(Bishop.getDirections(getPosition()));
+      directions.addAll(Rook.getDirections(getPosition()));
+      return directions;
    }
+
+
 
 }

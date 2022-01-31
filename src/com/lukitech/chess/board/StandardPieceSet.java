@@ -1,11 +1,5 @@
 package com.lukitech.chess.board;
-import com.lukitech.chess.pieces.Bishop;
-import com.lukitech.chess.pieces.Color;
-import com.lukitech.chess.pieces.King;
-import com.lukitech.chess.pieces.Knight;
-import com.lukitech.chess.pieces.Pawn;
-import com.lukitech.chess.pieces.Queen;
-import com.lukitech.chess.pieces.Rook;
+import com.lukitech.chess.pieces.*;
 
 public class StandardPieceSet implements PieceSet{
 
@@ -24,7 +18,7 @@ public class StandardPieceSet implements PieceSet{
       board.addPiece(new Knight(color), new Position(7, rank1));
       board.addPiece(new King(color), new Position(5, rank1));
       board.addPiece(new Rook(color), new Position(1, rank1));
-      board.addPiece(new Rook(color), new Position(9, rank1));
+      board.addPiece(new Rook(color), new Position(8, rank1));
       board.addPiece(new Bishop(color), new Position(3, rank1));
       board.addPiece(new Bishop(color), new Position(6, rank1));
       board.addPiece(new Pawn(color), new Position(1, rank2));      

@@ -1,5 +1,9 @@
 package com.lukitech.chess.pieces;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import com.lukitech.chess.board.Direction;
 import com.lukitech.chess.board.Position;
 
 public class Knight extends Piece
@@ -14,28 +18,30 @@ public class Knight extends Piece
    }
 
    @Override
-   public MoveResult move(Position newPosition) {
-      if(newPosition.equals(getPosition()))
-         return new MoveResult(false, "Not a move");
+   public List<Direction> getDirections() {
+      var directions = new ArrayList<Direction>();
+      directions.add(getDirection( 1,  2));
+      directions.add(getDirection(-1,  2));
+      directions.add(getDirection( 1, -2));
+      directions.add(getDirection(-1, -2));
 
-      int deltaRow = Math.abs(this.getPosition().getRow() - newPosition.getRow());
-      int deltaCol = Math.abs(this.getPosition().getColumn() - newPosition.getColumn()); 
+      directions.add(getDirection( 2,  1));
+      directions.add(getDirection(-2,  1));
+      directions.add(getDirection( 2, -1));
+      directions.add(getDirection(-2, -1));
 
-      if(!((deltaCol == 1 && deltaRow == 2) || (deltaRow == 1 && deltaCol == 2)))
-         return new MoveResult(false, "Not a valid move");
-
-      //Check if king was in check after move
-
-      var piece = getBoard().getPieces().stream().filter(p -> p.getPosition().equals(newPosition)).findFirst();
-      if(piece.isPresent())
-      {
-         if(piece.get() instanceof CheckMateable)
-            return new MoveResult(false, "Cannot capture this piece");
-         
-         piece.get().captured();
-         return new MoveResult(true, "Capture");
-      }
-
-      return super.move(newPosition);
+      return directions;
    }
+
+   private Direction getDirection(int x, int y){
+      var direction = new Direction();
+      int col = getPosition().getColumn() + x;
+      int row = getPosition().getRow() + y;
+      
+      if(row < 9 && row > 0 && col < 9 && col > 0)
+         direction.addPosition(new Position(row, col));
+
+      return direction;
+   }
+
 }
