@@ -1,6 +1,6 @@
 package com.lukitech.chess.printer;
-import com.lukitech.chess.board.Board;
+import com.lukitech.chess.board.StandardBoard;
 
 public interface Printer {
-   void print(Board board);
+   void print(StandardBoard board);
 }

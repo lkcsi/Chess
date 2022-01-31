@@ -14,16 +14,28 @@ public class Knight extends Piece
    }
 
    @Override
-   public boolean isLegalMove(Position position) {
-      if(position.equals(getPosition()))
-         return false;
+   public MoveResult move(Position newPosition) {
+      if(newPosition.equals(getPosition()))
+         return new MoveResult(false, "Not a move");
 
-      int deltaRow = Math.abs(this.getPosition().getRow() - position.getRow());
-      int deltaCol = Math.abs(this.getPosition().getColumn() - position.getColumn()); 
+      int deltaRow = Math.abs(this.getPosition().getRow() - newPosition.getRow());
+      int deltaCol = Math.abs(this.getPosition().getColumn() - newPosition.getColumn()); 
 
-      if((deltaCol == 1 && deltaRow == 2) || (deltaRow == 1 && deltaCol == 2))
-         return true;
+      if(!((deltaCol == 1 && deltaRow == 2) || (deltaRow == 1 && deltaCol == 2)))
+         return new MoveResult(false, "Not a valid move");
 
-      return false;
+      //Check if king was in check after move
+
+      var piece = getBoard().getPieces().stream().filter(p -> p.getPosition().equals(newPosition)).findFirst();
+      if(piece.isPresent())
+      {
+         if(piece.get() instanceof CheckMateable)
+            return new MoveResult(false, "Cannot capture this piece");
+         
+         piece.get().captured();
+         return new MoveResult(true, "Capture");
+      }
+
+      return super.move(newPosition);
    }
 }

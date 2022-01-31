@@ -14,11 +14,11 @@ public class Pawn extends Piece {
    }
 
    @Override
-   public boolean isLegalMove(Position position) {
-      if(position.equals(getPosition()))
-         return false;
+   public MoveResult move(Position newPosition) {
+      if(newPosition.equals(getPosition()))
+         return new MoveResult(false, "Not move");
 
-      return true;
+      return super.move(newPosition);
    }
    
 }

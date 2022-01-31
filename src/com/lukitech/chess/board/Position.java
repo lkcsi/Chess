@@ -2,13 +2,12 @@ package com.lukitech.chess.board;
 
 public class Position
 {
-	String columnPattern = "[a-z]{1}";
-	char column;
+	int column;
 	int row;
 	
-	public Position(char column, int row)
+	public Position(int column, int row)
 	{
-		if(column < 97 || column > 104)
+		if(column < 1 || column > 8)
 		{
 			throw new RuntimeException(column + " is not a valid column");
 		}
@@ -27,10 +26,10 @@ public class Position
 	
 	public String toString()
 	{
-		return "" + column + row;
+		return "" + (char)(column+64) + row;
 	}
 
-   public char getColumn() {
+   public int getColumn() {
       return column;
    }
 

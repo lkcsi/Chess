@@ -1,10 +1,14 @@
 package com.lukitech.chess.pieces;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import com.lukitech.chess.board.Direction;
 import com.lukitech.chess.board.Position;
 
-public class King extends Piece
-{
-	public King(Color color){
+public class King extends Piece implements CheckMateable, Ruler{
+
+   public King(Color color){
 		super("King", color);	
 	}
 
@@ -14,16 +18,60 @@ public class King extends Piece
    }
 
    @Override
-   public boolean isLegalMove(Position position) {
-      if(position.equals(getPosition()))
-         return false;
+   public MoveResult move(Position newPosition) {
+      if(newPosition.equals(getPosition()))
+         return new MoveResult(false, "Not a move");
 
-      int deltaRow = Math.abs(this.getPosition().getRow() - position.getRow());
-      int deltaCol = Math.abs(this.getPosition().getColumn() - position.getColumn()); 
+      int deltaRow = Math.abs(getPosition().getRow() - newPosition.getRow());
+      int deltaCol = Math.abs(getPosition().getColumn() - newPosition.getColumn()); 
 
       if(deltaCol > 1 || deltaRow > 1)
-         return false;
+         return new MoveResult(false, "Invalid move");  
 
-      return true;
+      return super.move(newPosition);
+   }
+
+
+   @Override
+   public boolean inCheckMate() {
+      return false;
+   }
+
+   @Override
+   public boolean inCheck() {
+      //
+      return false;
+   }
+
+   @Override
+   public boolean giveCheck() {
+      return false;
+   }
+
+   @Override
+   public List<Direction> getDirections() {
+      
+      var directions = new ArrayList<>();
+      directions.add(getDirection(-1, -1));
+      directions.add(getDirection(-1,  1));
+      directions.add(getDirection( 1, -1));
+      directions.add(getDirection( 1,  1));
+      directions.add(getDirection(-1,  0));
+      directions.add(getDirection( 1,  0));
+      directions.add(getDirection( 0, -1));
+      directions.add(getDirection( 0,  1));
+      
+      return null;
+   }
+
+   private Direction getDirection(int x, int y){
+
+      var position = getPosition();
+      var direction = new Direction();
+      
+      try{ direction.addPosition(new Position(position.getColumn() + x, position.getRow() + y));}
+      catch(Exception e){}
+
+      return direction;
    }
 }

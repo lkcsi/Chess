@@ -14,17 +14,37 @@ public class Bishop extends Piece{
    }
 
    @Override
-   public boolean isLegalMove(Position position) {
-      if(position.equals(this.getPosition()))
-         return false;
+   public MoveResult move(Position newPosition) {
+      if(newPosition.equals(this.getPosition()))
+         return new MoveResult(false, "Not a move");
 
-      int deltaRow = Math.abs(this.getPosition().getRow() - position.getRow());
-      int deltaCol = Math.abs(this.getPosition().getColumn() - position.getColumn()); 
+      int deltaRow = getPosition().getRow() - newPosition.getRow();
+      int deltaCol = getPosition().getColumn() - newPosition.getColumn();
 
-      if(deltaRow != deltaCol)
-         return false;
+      if(Math.abs(deltaRow) != Math.abs(deltaCol))
+         return new MoveResult(false, "Not a valid move");
 
-      return true;
+      int currentRow = getPosition().getRow();
+      int currentCol = getPosition().getColumn();
+
+      for(int i = 0; i < Math.abs(deltaRow); i++){
+         currentRow = deltaRow < 0 ? currentRow-1 : currentRow+1;
+         currentCol = deltaCol < 0 ? currentCol-1 : currentCol+1;
+
+         var nextPosition = new Position(currentCol, currentRow);
+         var piece = getBoard().getPieces().stream().filter(p -> p.getPosition().equals(nextPosition)).findAny();
+         if(piece.isPresent())
+         {
+            if(nextPosition != newPosition)
+               return new MoveResult(false, "Move blocked");
+            if(piece.get() instanceof CheckMateable)
+               return new MoveResult(false, "Cannot capture this piece");
+            
+            return new MoveResult(true, "Capture");
+         }
+      }
+
+      return super.move(newPosition);
    }
    
 }
