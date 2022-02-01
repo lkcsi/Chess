@@ -5,13 +5,14 @@ import java.util.List;
 
 import com.lukitech.chess.board.Board;
 import com.lukitech.chess.board.Direction;
+import com.lukitech.chess.board.Position;
 
 public class Pawn extends Piece {
 
    private boolean enPassant;
 
-   public Pawn(Color color) {
-      super("Pawn", color);
+   public Pawn(Color color, Position position) {
+      super("Pawn", color, position);
       enPassant = false;
    }
 
@@ -31,15 +32,15 @@ public class Pawn extends Piece {
       int dir = getColor() == Color.BLACK ? -1 : 1;
 
       if((Color.BLACK == getColor() && row == 7) || Color.WHITE == getColor() && row == 2){
-         directions.add(Direction.getStepDirection(getPosition(), 0, 2 * dir, false));
+         directions.add(Direction.getDirection(getPosition(), 0, 1 * dir, 2).setCaptureDirection(false));
       }
-      directions.add(Direction.getStepDirection(getPosition(),  0, 1 * dir, false));
+      directions.add(Direction.getDirection(getPosition(),  0, 1 * dir, 1).setCaptureDirection(false));
   
-      var capruteDirection = Direction.getStepDirection(getPosition(),  1, 1 * dir);
+      var capruteDirection = Direction.getDirection(getPosition(),  1, 1 * dir, 1);
       if(validityCheck(capruteDirection, getBoard()))
          directions.add(capruteDirection);
 
-      capruteDirection = Direction.getStepDirection(getPosition(), -1, 1 * dir);
+      capruteDirection = Direction.getDirection(getPosition(), -1, 1 * dir, 1);
       if(validityCheck(capruteDirection, getBoard()))
          directions.add(capruteDirection);
       

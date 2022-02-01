@@ -8,8 +8,8 @@ import com.lukitech.chess.board.Position;
 
 public class Knight extends Piece
 {
-	public Knight(Color color){
-		super("Knight", color);	
+	public Knight(Color color, Position position){
+		super("Knight", color, position);
 	}
 
    @Override

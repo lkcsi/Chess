@@ -20,8 +20,11 @@ public class Position
 		this.row = row;
 	}
 
-   public boolean equals(Position position){
-      return (position.row == this.row && position.column == this.column);
+	@Override
+   public boolean equals(Object position){
+		if(position == null)
+			return false;
+		return (((Position)position).row == this.row && ((Position)position).column == this.column);
    }
 	
 	public String toString()

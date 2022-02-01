@@ -8,8 +8,8 @@ import com.lukitech.chess.board.Position;
 
 public class Bishop extends Piece{
 
-   public Bishop(Color color) {
-      super("Bishop", color);
+   public Bishop(Color color, Position position) {
+      super("Bishop", color, position);
    }
 
    @Override
@@ -19,17 +19,17 @@ public class Bishop extends Piece{
 
    @Override
    public List<Direction> getDirections() {
-      List<Direction> directions = new ArrayList<Direction>();
+      List<Direction> directions = new ArrayList<>();
       directions.addAll(getDirections(getPosition()));
       return directions;
    }
 
    public static List<Direction> getDirections(Position position){
       var directions = new ArrayList<Direction>();
-      directions.add(Direction.getLongDirection(position, -1, -1));
-      directions.add(Direction.getLongDirection(position,  1, -1));
-      directions.add(Direction.getLongDirection(position, -1,  1));
-      directions.add(Direction.getLongDirection(position,  1,  1));      
+      directions.add(Direction.getDirection(position, -1, -1));
+      directions.add(Direction.getDirection(position,  1, -1));
+      directions.add(Direction.getDirection(position, -1,  1));
+      directions.add(Direction.getDirection(position,  1,  1));
       return directions;
    }
 }

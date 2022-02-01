@@ -9,9 +9,7 @@ public class Chess
 	{
 
       var pieceSet = new StandardPieceSet();
-      var board = new StandardBoard();
-      pieceSet.setupBoard(board, Color.WHITE);
-      pieceSet.setupBoard(board, Color.BLACK);
+      var board = new StandardBoard(new StandardPieceSet());
 
 		var printer = new ConsolePrinter();
       printer.print(board);

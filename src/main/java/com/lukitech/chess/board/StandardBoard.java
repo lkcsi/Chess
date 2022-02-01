@@ -5,11 +5,16 @@ import com.lukitech.chess.pieces.*;
 public class StandardBoard extends Board
 {
 	
-	public StandardBoard()
+	public StandardBoard(PieceSet pieceSet)
 	{
+        super(pieceSet);
 	}
-	
-   
+
+    public StandardBoard(PieceSet white, PieceSet black)
+    {
+        super(white, black);
+    }
+
 
 
    public String toString(){

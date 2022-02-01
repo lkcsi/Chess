@@ -14,10 +14,12 @@ public class Direction {
    public Direction(Position position){
       positions = new ArrayList<>();
       positions.add(position);
+      capture = true;
    }
 
-   public void setCaptureDirection(boolean capture){
+   public Direction setCaptureDirection(boolean capture){
       this.capture = capture;
+      return this;
    }
 
    public boolean captureDirection(){
@@ -36,12 +38,12 @@ public class Direction {
       return positions.stream().anyMatch(p -> p.equals(position));
    }
 
-   public static Direction getLongDirection(Position position, int colStep, int rowStep){
+   public static Direction getDirection(Position position, int colStep, int rowStep, int distance){
       var direction = new Direction();
       int col = position.getColumn() + colStep;
       int row = position.getRow() + rowStep;
 
-      while(col < 9 && row < 9 && col > 0 && row > 0){
+      while(col < 9 && row < 9 && col > 0 && row > 0 && direction.size() < distance){
          direction.addPosition(new Position(col, row));         
          col = col + colStep;
          row = row + rowStep;
@@ -49,20 +51,10 @@ public class Direction {
       return direction;
    }
 
-   public static Direction getStepDirection(Position position, int colStep, int rowStep, boolean capture){
-      var direction = getStepDirection(position, colStep, rowStep);
-      direction.setCaptureDirection(true);
-      return direction;
+   public static Direction getDirection(Position position, int colStep, int rowStep) {
+      return getDirection(position, colStep, rowStep, 100);
    }
-
-   public static Direction getStepDirection(Position position, int colStep, int rowStep){
-      var direction = new Direction();
-      int col = position.getColumn() + colStep;
-      int row = position.getRow() + rowStep;
-
-      if(col < 9 && row < 9 && col > 0 && row > 0){
-         direction.addPosition(new Position(col, row));
-      }
-      return direction;
+   public int size() {
+      return positions.size();
    }
 }

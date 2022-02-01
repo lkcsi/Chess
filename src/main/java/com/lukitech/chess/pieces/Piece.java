@@ -9,23 +9,24 @@ public abstract class Piece
 	private String name;
 	private Color color;
 	private Position position;
-   private Board board;
+    private Board board;
 
 	
-	public Piece(String name, Color color){
+	public Piece(String name, Color color, Position position){
 		this.name = name;
 		this.color = color;
+        this.position = position;
 	}
 	
 	public void setPosition(Position position){
 		this.position = new Position(position.getColumn(), position.getRow());
 	}
 	
-   public void setBoard(Board board){
+    public void setBoard(Board board){
       this.board = board;
    }
 
-   public Board getBoard(){
+    public Board getBoard(){
       return board;
    }
 
@@ -37,23 +38,8 @@ public abstract class Piece
 		return color + " " + name + " " + position.toString();
 	}
 
-   public abstract char getLetter();
+    public abstract char getLetter();
 
-   public boolean giveCheck(){
-      for(var direction : getDirections().stream().filter(d -> d.captureDirection()).collect(Collectors.toList())){
-         for(var pos : direction.getPositions()){
-            var piece = getBoard().getPieceByPosition(pos);
-            if(piece == null)
-               continue;
-            if(piece.getColor() == color)
-               break;
-            if(!(piece instanceof CheckMateable))
-               break;
-            return true;
-         }
-      }
-      return false;
-   }
    public abstract List<Direction> getDirections();
    
    public MoveResult move(Position newPosition){
@@ -61,7 +47,6 @@ public abstract class Piece
          return new MoveResult(false, "Not a move");
 
       var direction = getDirections().stream().filter(d -> d.contains(newPosition)).findFirst().orElse(null);
-      
       if(direction == null)
          return new MoveResult(false, "Not a valid move");
 
@@ -69,23 +54,49 @@ public abstract class Piece
          var piece = board.getPieceByPosition(pos);
          if(piece != null)
          {
-            if(pos != newPosition)
+            if(!pos.equals(newPosition))
                return new MoveResult(false, "Move blocked");
             if(!direction.captureDirection())
                return new MoveResult(false, "Cannot capture this direction");
             if(piece.getColor() == getColor() || piece instanceof CheckMateable)
-               return new MoveResult(false, "Cannot capture this piece");   
+               return new MoveResult(false, "Cannot capture this piece");
+
+            return captured(pos, piece);
          }
-         if(pos == newPosition){
-            position = newPosition;
-            board.capture(piece);
-            return new MoveResult(true, this.name + " captured " + piece.name + " in position " + newPosition.toString());
+         if(pos.equals(newPosition)){
+             return moved(newPosition);
          }
       }
-      position = newPosition;
-      return new MoveResult(true, this.name + " moved to " + newPosition.toString());
+      return new MoveResult(false, "Unreachable in theory");
    }
-	
+
+   private MoveResult checkSafeMove(Position position){
+       var originalPosition = getPosition();
+       setPosition(position);
+       if(board.inCheck(color)) {
+           setPosition(originalPosition);
+           return new MoveResult(false, "This move results a check of your own king");
+       }
+       return new MoveResult(true, "");
+   }
+
+    private MoveResult captured(Position position, Piece piece){
+       var checkSafe = checkSafeMove(position);
+       if(checkSafe.result != true)
+           return checkSafe;
+
+       board.capture(piece);
+       return new MoveResult(true, this.name + " captured " + piece.name + " in position " + position.toString());
+   }
+
+    private MoveResult moved(Position position){
+        var checkSafe = checkSafeMove(position);
+        if(checkSafe.result != true)
+            return checkSafe;
+
+       return new MoveResult(true, this.name + " moved to " + position.toString());
+   }
+
    public Color getColor(){
       return color;
    }
