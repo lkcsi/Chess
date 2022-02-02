@@ -79,7 +79,7 @@ public abstract class Board {
 
    public boolean givesCheck(Piece piece, Piece king){
       for(var direction : piece.getDirections().stream()
-              .filter(d -> d.captureDirection() && d.contains(king.getPosition())).collect(Collectors.toList())){
+              .filter(d -> d.canMove(Direction.CAPTURE_MOVE) && d.contains(king.getPosition())).collect(Collectors.toList())){
          for(var pos : direction.getPositions()){
             var otherPiece = getPieceByPosition(pos);
             if(otherPiece == null)

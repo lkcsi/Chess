@@ -13,8 +13,8 @@ public class Queen extends Piece {
    }
 
    @Override
-   public char getLetter() {
-      return 'Q';
+   public String getLetter() {
+      return "Q";
    }
 
    @Override

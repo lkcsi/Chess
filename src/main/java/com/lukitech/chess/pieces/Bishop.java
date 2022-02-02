@@ -13,8 +13,8 @@ public class Bishop extends Piece{
    }
 
    @Override
-   public char getLetter() {
-      return 'B';
+   public String getLetter() {
+      return "B";
    }
 
    @Override
@@ -26,10 +26,10 @@ public class Bishop extends Piece{
 
    public static List<Direction> getDirections(Position position){
       var directions = new ArrayList<Direction>();
-      directions.add(Direction.getDirection(position, -1, -1));
-      directions.add(Direction.getDirection(position,  1, -1));
-      directions.add(Direction.getDirection(position, -1,  1));
-      directions.add(Direction.getDirection(position,  1,  1));
+      directions.add(Direction.getDirection(position, -1, -1, Direction.CAPTURE_MOVE | Direction.SIMPLE_MOVE));
+      directions.add(Direction.getDirection(position,  1, -1, Direction.CAPTURE_MOVE | Direction.SIMPLE_MOVE));
+      directions.add(Direction.getDirection(position, -1,  1, Direction.CAPTURE_MOVE | Direction.SIMPLE_MOVE));
+      directions.add(Direction.getDirection(position,  1,  1, Direction.CAPTURE_MOVE | Direction.SIMPLE_MOVE));
       return directions;
    }
 }

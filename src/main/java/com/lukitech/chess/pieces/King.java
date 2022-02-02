@@ -13,8 +13,8 @@ public class King extends Piece implements CheckMateable, Ruler{
 	}
 
    @Override
-   public char getLetter() {
-      return 'K';
+   public String getLetter() {
+      return "K";
    }
 
    @Override
@@ -31,14 +31,14 @@ public class King extends Piece implements CheckMateable, Ruler{
    @Override
    public List<Direction> getDirections() {
       var directions = new ArrayList<Direction>();
-      directions.add(Direction.getDirection(getPosition(),  1,  1, 1));
-      directions.add(Direction.getDirection(getPosition(),  1, -1, 1));
-      directions.add(Direction.getDirection(getPosition(),  1,  0, 1));
-      directions.add(Direction.getDirection(getPosition(), -1,  1, 1));
-      directions.add(Direction.getDirection(getPosition(), -1, -1, 1));
-      directions.add(Direction.getDirection(getPosition(), -1,  0, 1));
-      directions.add(Direction.getDirection(getPosition(),  0,  1, 1));
-      directions.add(Direction.getDirection(getPosition(),  0, -1, 1));
+      directions.add(Direction.getDirection(getPosition(),  1,  1, 1, Direction.CAPTURE_MOVE | Direction.SIMPLE_MOVE));
+      directions.add(Direction.getDirection(getPosition(),  1, -1, 1, Direction.CAPTURE_MOVE | Direction.SIMPLE_MOVE));
+      directions.add(Direction.getDirection(getPosition(),  1,  0, 1, Direction.CAPTURE_MOVE | Direction.SIMPLE_MOVE));
+      directions.add(Direction.getDirection(getPosition(), -1,  1, 1, Direction.CAPTURE_MOVE | Direction.SIMPLE_MOVE));
+      directions.add(Direction.getDirection(getPosition(), -1, -1, 1, Direction.CAPTURE_MOVE | Direction.SIMPLE_MOVE));
+      directions.add(Direction.getDirection(getPosition(), -1,  0, 1, Direction.CAPTURE_MOVE | Direction.SIMPLE_MOVE));
+      directions.add(Direction.getDirection(getPosition(),  0,  1, 1, Direction.CAPTURE_MOVE | Direction.SIMPLE_MOVE));
+      directions.add(Direction.getDirection(getPosition(),  0, -1, 1, Direction.CAPTURE_MOVE | Direction.SIMPLE_MOVE));
       
       return directions;
    }

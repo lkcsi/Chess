@@ -21,8 +21,8 @@ public class Pawn extends Piece {
    }
 
    @Override
-   public char getLetter() {
-      return 'P';
+   public String getLetter() {
+      return "P";
    }
 
    @Override
@@ -32,24 +32,13 @@ public class Pawn extends Piece {
       int dir = getColor() == Color.BLACK ? -1 : 1;
 
       if((Color.BLACK == getColor() && row == 7) || Color.WHITE == getColor() && row == 2){
-         directions.add(Direction.getDirection(getPosition(), 0, 1 * dir, 2).setCaptureDirection(false));
+         directions.add(Direction.getDirection(getPosition(), 0, 1 * dir, 2, Direction.SIMPLE_MOVE));
       }
-      directions.add(Direction.getDirection(getPosition(),  0, 1 * dir, 1).setCaptureDirection(false));
+      directions.add(Direction.getDirection(getPosition(),  0, 1 * dir, 1, Direction.SIMPLE_MOVE));
   
-      var capruteDirection = Direction.getDirection(getPosition(),  1, 1 * dir, 1);
-      if(validityCheck(capruteDirection, getBoard()))
-         directions.add(capruteDirection);
-
-      capruteDirection = Direction.getDirection(getPosition(), -1, 1 * dir, 1);
-      if(validityCheck(capruteDirection, getBoard()))
-         directions.add(capruteDirection);
+      directions.add(Direction.getDirection(getPosition(),  1, 1 * dir, 1, Direction.CAPTURE_MOVE));
+      directions.add(Direction.getDirection(getPosition(), -1, 1 * dir, 1, Direction.CAPTURE_MOVE));
       
       return directions;
-   }
-
-   private static boolean validityCheck(Direction direction, Board board){
-      if(!direction.getPositions().isEmpty() && board.getPieceByPosition(direction.getPositions().get(0)) != null)
-         return true;
-      return false;
    }
 }

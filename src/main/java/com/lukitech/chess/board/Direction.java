@@ -3,27 +3,29 @@ package com.lukitech.chess.board;
 import java.util.ArrayList;
 
 public class Direction {
-   public ArrayList<Position> positions;
-   public boolean capture;
+   private ArrayList<Position> positions;
+   private int moveFlags;
+   public static final int CAPTURE_MOVE = 1;
+   public static final int JUMP_MOVE = 2;
+   public static final int SIMPLE_MOVE = 4;
 
-   public Direction(){
+   public Direction(int moveFlags){
       positions = new ArrayList<>();
-      capture = true;
+      this.moveFlags = moveFlags;
    }
 
-   public Direction(Position position){
+   public Direction(Position position, int moveFlags){
       positions = new ArrayList<>();
       positions.add(position);
-      capture = true;
+      this.moveFlags = moveFlags;
    }
 
-   public Direction setCaptureDirection(boolean capture){
-      this.capture = capture;
-      return this;
+   public boolean onlyMove(int moveFlags){
+      return this.moveFlags == moveFlags;
    }
 
-   public boolean captureDirection(){
-      return capture;
+   public boolean canMove(int moveFlags){
+      return (this.moveFlags & moveFlags) == moveFlags;
    }
 
    public void addPosition(Position position){
@@ -38,8 +40,8 @@ public class Direction {
       return positions.stream().anyMatch(p -> p.equals(position));
    }
 
-   public static Direction getDirection(Position position, int colStep, int rowStep, int distance){
-      var direction = new Direction();
+   public static Direction getDirection(Position position, int colStep, int rowStep, int distance, int moveFlags){
+      var direction = new Direction(moveFlags);
       int col = position.getColumn() + colStep;
       int row = position.getRow() + rowStep;
 
@@ -51,8 +53,8 @@ public class Direction {
       return direction;
    }
 
-   public static Direction getDirection(Position position, int colStep, int rowStep) {
-      return getDirection(position, colStep, rowStep, 100);
+   public static Direction getDirection(Position position, int colStep, int rowStep, int moveFlags) {
+      return getDirection(position, colStep, rowStep, 100, moveFlags);
    }
    public int size() {
       return positions.size();

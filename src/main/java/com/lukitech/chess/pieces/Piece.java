@@ -1,6 +1,5 @@
 package com.lukitech.chess.pieces;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import com.lukitech.chess.board.*;
 
@@ -38,7 +37,7 @@ public abstract class Piece
 		return color + " " + name + " " + position.toString();
 	}
 
-    public abstract char getLetter();
+    public abstract String getLetter();
 
    public abstract List<Direction> getDirections();
    
@@ -56,7 +55,7 @@ public abstract class Piece
          {
             if(!pos.equals(newPosition))
                return new MoveResult(false, "Move blocked");
-            if(!direction.captureDirection())
+            if(!direction.canMove(Direction.CAPTURE_MOVE))
                return new MoveResult(false, "Cannot capture this direction");
             if(piece.getColor() == getColor() || piece instanceof CheckMateable)
                return new MoveResult(false, "Cannot capture this piece");

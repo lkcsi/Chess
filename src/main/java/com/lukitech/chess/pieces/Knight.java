@@ -13,35 +13,23 @@ public class Knight extends Piece
 	}
 
    @Override
-   public char getLetter() {
-      return 'N';
+   public String getLetter() {
+      return "N";
    }
 
    @Override
    public List<Direction> getDirections() {
       var directions = new ArrayList<Direction>();
-      directions.add(getDirection( 1,  2));
-      directions.add(getDirection(-1,  2));
-      directions.add(getDirection( 1, -2));
-      directions.add(getDirection(-1, -2));
+      directions.add(Direction.getDirection( getPosition(),  1, 2, 1, Direction.CAPTURE_MOVE | Direction.SIMPLE_MOVE | Direction.JUMP_MOVE));
+      directions.add(Direction.getDirection( getPosition(),  1, -2, 1, Direction.CAPTURE_MOVE | Direction.SIMPLE_MOVE | Direction.JUMP_MOVE));
+      directions.add(Direction.getDirection( getPosition(),  -1, 2, 1, Direction.CAPTURE_MOVE | Direction.SIMPLE_MOVE | Direction.JUMP_MOVE));
+      directions.add(Direction.getDirection( getPosition(),  -1, -2, 1, Direction.CAPTURE_MOVE | Direction.SIMPLE_MOVE | Direction.JUMP_MOVE));
 
-      directions.add(getDirection( 2,  1));
-      directions.add(getDirection(-2,  1));
-      directions.add(getDirection( 2, -1));
-      directions.add(getDirection(-2, -1));
+      directions.add(Direction.getDirection( getPosition(),  2, 1, 1, Direction.CAPTURE_MOVE | Direction.SIMPLE_MOVE | Direction.JUMP_MOVE));
+      directions.add(Direction.getDirection( getPosition(),  2, -1, 1, Direction.CAPTURE_MOVE | Direction.SIMPLE_MOVE | Direction.JUMP_MOVE));
+      directions.add(Direction.getDirection( getPosition(),  -2, 1, 1, Direction.CAPTURE_MOVE | Direction.SIMPLE_MOVE | Direction.JUMP_MOVE));
+      directions.add(Direction.getDirection( getPosition(),  -2, -1, 1, Direction.CAPTURE_MOVE | Direction.SIMPLE_MOVE | Direction.JUMP_MOVE));
 
       return directions;
    }
-
-   private Direction getDirection(int x, int y){
-      var direction = new Direction();
-      int col = getPosition().getColumn() + x;
-      int row = getPosition().getRow() + y;
-      
-      if(row < 9 && row > 0 && col < 9 && col > 0)
-         direction.addPosition(new Position(row, col));
-
-      return direction;
-   }
-
 }

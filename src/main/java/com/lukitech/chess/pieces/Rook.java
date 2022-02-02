@@ -13,8 +13,8 @@ public class Rook extends Piece {
    }
 
    @Override
-   public char getLetter() {
-      return 'R';
+   public String getLetter() {
+      return "R";
    }
 
    @Override
@@ -26,10 +26,10 @@ public class Rook extends Piece {
 
    public static List<Direction> getDirections(Position position){
       var directions = new ArrayList<Direction>();
-      directions.add(Direction.getDirection(position, -1,  0));
-      directions.add(Direction.getDirection(position,  1,  0));
-      directions.add(Direction.getDirection(position,  0,  1));
-      directions.add(Direction.getDirection(position,  0, -1));
+      directions.add(Direction.getDirection(position, -1,  0, Direction.CAPTURE_MOVE | Direction.SIMPLE_MOVE));
+      directions.add(Direction.getDirection(position,  1,  0, Direction.CAPTURE_MOVE | Direction.SIMPLE_MOVE));
+      directions.add(Direction.getDirection(position,  0,  1, Direction.CAPTURE_MOVE | Direction.SIMPLE_MOVE));
+      directions.add(Direction.getDirection(position,  0, -1, Direction.CAPTURE_MOVE | Direction.SIMPLE_MOVE));
       return directions;
    }
 
