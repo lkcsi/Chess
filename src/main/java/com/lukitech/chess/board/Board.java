@@ -10,16 +10,15 @@ import com.lukitech.chess.pieces.Piece;
 
 public abstract class Board {
 
-   private List<Piece> pieces;
+   private List<Piece> pieces = new ArrayList<>();
+   private Color colorToMove = Color.WHITE;
 
    public Board(PieceSet pieceSet){
-		pieces = new ArrayList<>();
         pieceSet.getPieces(Color.WHITE).forEach(p -> addPiece(p));
         pieceSet.getPieces(Color.BLACK).forEach(p -> addPiece(p));
    }
 
    public Board(PieceSet white, PieceSet black){
-      pieces = new ArrayList<>();
       white.getPieces(Color.WHITE).forEach(p -> addPiece(p));
       black.getPieces(Color.BLACK).forEach(p -> addPiece(p));
    }
@@ -54,6 +53,14 @@ public abstract class Board {
       var piece = getPieceByPosition(position);
       removePiece(piece);
       return piece;
+   }
+
+   public void endTurn(){
+      colorToMove = colorToMove == Color.WHITE ? Color.BLACK : Color.WHITE;
+   }
+
+   public Color getColorToMove(){
+      return colorToMove;
    }
 
    public boolean removePiece(Piece piece){

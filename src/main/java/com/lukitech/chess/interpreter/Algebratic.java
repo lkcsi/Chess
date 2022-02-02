@@ -32,7 +32,7 @@ public class Algebratic implements Interpreter{
         String destinationColumn = matcher.group(5);
         String destinationRow = matcher.group(6);
 
-        var pieces = board.getPieces();
+        var pieces = board.getPieces().stream().filter(p -> p.getColor() == board.getColorToMove()).collect(Collectors.toList());
         if(pieceLetter == null)
             pieces = pieces.stream().filter(p -> p.getLetter().equals("P")).collect(Collectors.toList());
         else

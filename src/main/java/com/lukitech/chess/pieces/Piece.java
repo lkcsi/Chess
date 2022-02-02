@@ -85,14 +85,15 @@ public abstract class Piece
            return checkSafe;
 
        board.capture(piece);
+       board.endTurn();
        return new MoveResult(true, this.name + " captured " + piece.name + " in position " + position.toString());
    }
 
     private MoveResult moved(Position position){
-        var checkSafe = checkSafeMove(position);
-        if(checkSafe.result != true)
+       var checkSafe = checkSafeMove(position);
+       if(checkSafe.result != true)
             return checkSafe;
-
+       board.endTurn();
        return new MoveResult(true, this.name + " moved to " + position.toString());
    }
 
