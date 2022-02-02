@@ -1,10 +1,10 @@
 package com.lukitech.chess.interpreter;
 
 import com.lukitech.chess.board.Board;
-import com.lukitech.chess.board.Direction;
 import com.lukitech.chess.board.Position;
-import com.lukitech.chess.pieces.MoveResult;
+import com.lukitech.chess.moves.MoveType;
 
+import java.util.EnumSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -19,24 +19,23 @@ public class Algebratic implements Interpreter{
     }
 
     @Override
-    public MoveResult processMove(String move) {
+    public boolean processMove(String move) {
         Matcher matcher = pattern.matcher(move);
 
         if(!matcher.matches())
-            return new MoveResult(false,"Wrong pattern");
+            return false;
 
         String pieceLetter = matcher.group(1);
         String pieceColumn = matcher.group(2);
         String pieceRow = matcher.group(3);
-        String captureMove = matcher.group(4);
+        String captureMark = matcher.group(4);
         String destinationColumn = matcher.group(5);
         String destinationRow = matcher.group(6);
 
         var pieces = board.getPieces().stream().filter(p -> p.getColor() == board.getColorToMove()).collect(Collectors.toList());
-        if(pieceLetter == null)
-            pieces = pieces.stream().filter(p -> p.getLetter().equals("P")).collect(Collectors.toList());
-        else
-            pieces = pieces.stream().filter(p -> p.getLetter().equals(pieceLetter)).collect(Collectors.toList());
+
+        var letter = pieceLetter == null ? "P" : pieceLetter;
+        pieces = pieces.stream().filter(p -> p.getLetter().equals(letter)).collect(Collectors.toList());
 
         if(pieceColumn != null){
             int column = (pieceColumn.charAt(0) - 'a') + 1;
@@ -49,26 +48,26 @@ public class Algebratic implements Interpreter{
         }
 
         if(destinationColumn == null)
-            return new MoveResult(false,"Wrong pattern");
+            return false;
         int column = (destinationColumn.charAt(0) - 'a') + 1;
 
         if(destinationRow == null)
-            return new MoveResult(false,"Wrong pattern");
+            return false;
         int row = Integer.parseInt(destinationRow);
 
         Position destination = new Position(column, row);
 
-        if(captureMove == null)
-            pieces = pieces.stream().filter(p -> p.getDirections().stream().anyMatch(d -> d.contains(destination) && !d.onlyMove(Direction.CAPTURE_MOVE))).collect(Collectors.toList());
+        if(captureMark == null)
+            pieces = pieces.stream().filter(p -> p.getMoves().stream().anyMatch(d -> d.contains(destination) && !d.moveTypes().equals(EnumSet.of(MoveType.CAPTURE)))).collect(Collectors.toList());
         else
-            pieces = pieces.stream().filter(p -> p.getDirections().stream().anyMatch(d -> d.contains(destination) && d.canMove(Direction.CAPTURE_MOVE))).collect(Collectors.toList());
+            pieces = pieces.stream().filter(p -> p.getMoves().stream().anyMatch(d -> d.contains(destination) && d.moveTypes().contains(MoveType.CAPTURE))).collect(Collectors.toList());
 
         if(pieces.size() == 0)
-            return new MoveResult(false, "Invalid move");
+            return false;
 
         if(pieces.size() > 1)
-            return new MoveResult(false, "Ambiguous move");
+            return false;
 
-        return pieces.get(0).move(destination);
+        return pieces.get(0).move(destination).getResult();
     }
 }

@@ -1,18 +1,20 @@
 package com.lukitech.chess.pieces;
 
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.List;
 
-import com.lukitech.chess.board.Board;
-import com.lukitech.chess.board.Direction;
+import com.lukitech.chess.moves.Move;
 import com.lukitech.chess.board.Position;
+import com.lukitech.chess.moves.MoveFactory;
+import com.lukitech.chess.moves.MoveType;
 
 public class Pawn extends Piece {
 
    private boolean enPassant;
 
    public Pawn(Color color, Position position) {
-      super("Pawn", color, position);
+      super("Pawn.json", color, position);
       enPassant = false;
    }
 
@@ -26,19 +28,19 @@ public class Pawn extends Piece {
    }
 
    @Override
-   public List<Direction> getDirections() {
-      var directions = new ArrayList<Direction>();
+   public List<Move> getMoves() {
+      var moves = new ArrayList<Move>();
       int row = getPosition().getRow();
       int dir = getColor() == Color.BLACK ? -1 : 1;
 
       if((Color.BLACK == getColor() && row == 7) || Color.WHITE == getColor() && row == 2){
-         directions.add(Direction.getDirection(getPosition(), 0, 1 * dir, 2, Direction.SIMPLE_MOVE));
+         moves.add(MoveFactory.getDirection(getPosition(), 0, 1 * dir, 2, EnumSet.of(MoveType.MOVE)));
       }
-      directions.add(Direction.getDirection(getPosition(),  0, 1 * dir, 1, Direction.SIMPLE_MOVE));
-  
-      directions.add(Direction.getDirection(getPosition(),  1, 1 * dir, 1, Direction.CAPTURE_MOVE));
-      directions.add(Direction.getDirection(getPosition(), -1, 1 * dir, 1, Direction.CAPTURE_MOVE));
+      moves.add(MoveFactory.getDirection(getPosition(), 0, 1 * dir, 1, EnumSet.of(MoveType.MOVE)));
+
+      moves.add(MoveFactory.getDirection(getPosition(),  1, 1 * dir, 1, EnumSet.of(MoveType.CAPTURE)));
+      moves.add(MoveFactory.getDirection(getPosition(), -1, 1 * dir, 1, EnumSet.of(MoveType.CAPTURE)));
       
-      return directions;
+      return moves;
    }
 }

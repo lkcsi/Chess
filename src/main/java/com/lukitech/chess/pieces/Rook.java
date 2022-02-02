@@ -1,10 +1,13 @@
 package com.lukitech.chess.pieces;
 
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.List;
 
-import com.lukitech.chess.board.Direction;
+import com.lukitech.chess.moves.Move;
 import com.lukitech.chess.board.Position;
+import com.lukitech.chess.moves.MoveFactory;
+import com.lukitech.chess.moves.MoveType;
 
 public class Rook extends Piece {
 
@@ -18,19 +21,20 @@ public class Rook extends Piece {
    }
 
    @Override
-   public List<Direction> getDirections() {
-      List<Direction> directions = new ArrayList<>();
-      directions.addAll(getDirections(getPosition()));
-      return directions;
+   public List<Move> getMoves() {
+      List<Move> moves = new ArrayList<>();
+      moves.addAll(getDirections(getPosition()));
+      return moves;
    }
 
-   public static List<Direction> getDirections(Position position){
-      var directions = new ArrayList<Direction>();
-      directions.add(Direction.getDirection(position, -1,  0, Direction.CAPTURE_MOVE | Direction.SIMPLE_MOVE));
-      directions.add(Direction.getDirection(position,  1,  0, Direction.CAPTURE_MOVE | Direction.SIMPLE_MOVE));
-      directions.add(Direction.getDirection(position,  0,  1, Direction.CAPTURE_MOVE | Direction.SIMPLE_MOVE));
-      directions.add(Direction.getDirection(position,  0, -1, Direction.CAPTURE_MOVE | Direction.SIMPLE_MOVE));
-      return directions;
+   public static List<Move> getDirections(Position position){
+      var moves = new ArrayList<Move>();
+      var set = EnumSet.of(MoveType.CAPTURE, MoveType.MOVE);
+      moves.add(MoveFactory.getDirection(position, -1,  0, set));
+      moves.add(MoveFactory.getDirection(position,  1,  0, set));
+      moves.add(MoveFactory.getDirection(position,  0,  1, set));
+      moves.add(MoveFactory.getDirection(position,  0, -1, set));
+      return moves;
    }
 
 }

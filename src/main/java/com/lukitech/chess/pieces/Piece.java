@@ -1,7 +1,11 @@
 package com.lukitech.chess.pieces;
+import java.util.EnumSet;
 import java.util.List;
 
 import com.lukitech.chess.board.*;
+import com.lukitech.chess.moves.Move;
+import com.lukitech.chess.moves.MoveResult;
+import com.lukitech.chess.moves.MoveType;
 
 public abstract class Piece
 {
@@ -39,62 +43,59 @@ public abstract class Piece
 
     public abstract String getLetter();
 
-   public abstract List<Direction> getDirections();
+   public abstract List<Move> getMoves();
    
    public MoveResult move(Position newPosition){
       if(newPosition.equals(this.getPosition()))
-         return new MoveResult(false, "Not a move");
+          return MoveResult.WrongDirection;
 
-      var direction = getDirections().stream().filter(d -> d.contains(newPosition)).findFirst().orElse(null);
-      if(direction == null)
-         return new MoveResult(false, "Not a valid move");
+      var move = getMoves().stream().filter(d -> d.contains(newPosition)).findFirst().orElse(null);
+      if(move == null)
+          return MoveResult.WrongDirection;
 
-      for(var pos : direction.getPositions()){
+      for(var pos : move.getPositions()){
          var piece = board.getPieceByPosition(pos);
          if(piece != null)
          {
             if(!pos.equals(newPosition))
-               return new MoveResult(false, "Move blocked");
-            if(!direction.canMove(Direction.CAPTURE_MOVE))
-               return new MoveResult(false, "Cannot capture this direction");
-            if(piece.getColor() == getColor() || piece instanceof CheckMateable)
-               return new MoveResult(false, "Cannot capture this piece");
+               return MoveResult.MoveBlocked;
+            if(piece.getColor() == getColor())
+                return MoveResult.MoveBlocked;
+            if(!move.moveTypes().contains(MoveType.CAPTURE))
+                return MoveResult.NotCaptureMove;
+            if(piece instanceof CheckMateable)
+                return MoveResult.PieceNotCapturable;
 
             return captured(pos, piece);
          }
          if(pos.equals(newPosition)){
+             if(move.moveTypes().equals(EnumSet.of(MoveType.CAPTURE)))
+                 return MoveResult.CaptureMoveOnly;
              return moved(newPosition);
          }
       }
-      return new MoveResult(false, "Unreachable in theory");
+      return MoveResult.WrongDirection;
    }
 
-   private MoveResult checkSafeMove(Position position){
+   private MoveResult checkSafeMove(Position position, Piece piece, MoveResult moveResult){
        var originalPosition = getPosition();
        setPosition(position);
        if(board.inCheck(color)) {
            setPosition(originalPosition);
-           return new MoveResult(false, "This move results a check of your own king");
+           return MoveResult.AllowCheck;
        }
-       return new MoveResult(true, "");
+       if(moveResult.equals(MoveResult.Capture))
+           board.capture(piece);
+       board.endTurn();
+       return moveResult;
    }
 
     private MoveResult captured(Position position, Piece piece){
-       var checkSafe = checkSafeMove(position);
-       if(checkSafe.result != true)
-           return checkSafe;
-
-       board.capture(piece);
-       board.endTurn();
-       return new MoveResult(true, this.name + " captured " + piece.name + " in position " + position.toString());
+       return checkSafeMove(position, piece, MoveResult.Capture);
    }
 
     private MoveResult moved(Position position){
-       var checkSafe = checkSafeMove(position);
-       if(checkSafe.result != true)
-            return checkSafe;
-       board.endTurn();
-       return new MoveResult(true, this.name + " moved to " + position.toString());
+       return checkSafeMove(position, null, MoveResult.Move);
    }
 
    public Color getColor(){

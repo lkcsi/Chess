@@ -1,10 +1,13 @@
 package com.lukitech.chess.pieces;
 
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.List;
 
-import com.lukitech.chess.board.Direction;
+import com.lukitech.chess.moves.Move;
 import com.lukitech.chess.board.Position;
+import com.lukitech.chess.moves.MoveFactory;
+import com.lukitech.chess.moves.MoveType;
 
 public class King extends Piece implements CheckMateable, Ruler{
 
@@ -29,17 +32,18 @@ public class King extends Piece implements CheckMateable, Ruler{
    }
 
    @Override
-   public List<Direction> getDirections() {
-      var directions = new ArrayList<Direction>();
-      directions.add(Direction.getDirection(getPosition(),  1,  1, 1, Direction.CAPTURE_MOVE | Direction.SIMPLE_MOVE));
-      directions.add(Direction.getDirection(getPosition(),  1, -1, 1, Direction.CAPTURE_MOVE | Direction.SIMPLE_MOVE));
-      directions.add(Direction.getDirection(getPosition(),  1,  0, 1, Direction.CAPTURE_MOVE | Direction.SIMPLE_MOVE));
-      directions.add(Direction.getDirection(getPosition(), -1,  1, 1, Direction.CAPTURE_MOVE | Direction.SIMPLE_MOVE));
-      directions.add(Direction.getDirection(getPosition(), -1, -1, 1, Direction.CAPTURE_MOVE | Direction.SIMPLE_MOVE));
-      directions.add(Direction.getDirection(getPosition(), -1,  0, 1, Direction.CAPTURE_MOVE | Direction.SIMPLE_MOVE));
-      directions.add(Direction.getDirection(getPosition(),  0,  1, 1, Direction.CAPTURE_MOVE | Direction.SIMPLE_MOVE));
-      directions.add(Direction.getDirection(getPosition(),  0, -1, 1, Direction.CAPTURE_MOVE | Direction.SIMPLE_MOVE));
+   public List<Move> getMoves() {
+      var moves = new ArrayList<Move>();
+      var set = EnumSet.of(MoveType.MOVE, MoveType.CAPTURE);
+      moves.add(MoveFactory.getDirection(getPosition(),  1,  1, 1, set));
+      moves.add(MoveFactory.getDirection(getPosition(),  1, -1, 1, set));
+      moves.add(MoveFactory.getDirection(getPosition(),  1,  0, 1, set));
+      moves.add(MoveFactory.getDirection(getPosition(), -1,  1, 1, set));
+      moves.add(MoveFactory.getDirection(getPosition(), -1, -1, 1, set));
+      moves.add(MoveFactory.getDirection(getPosition(), -1,  0, 1, set));
+      moves.add(MoveFactory.getDirection(getPosition(),  0,  1, 1, set));
+      moves.add(MoveFactory.getDirection(getPosition(),  0, -1, 1, set));
       
-      return directions;
+      return moves;
    }
 }

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.lukitech.chess.moves.MoveType;
 import com.lukitech.chess.pieces.CheckMateable;
 import com.lukitech.chess.pieces.Color;
 import com.lukitech.chess.pieces.Piece;
@@ -85,8 +86,8 @@ public abstract class Board {
    }
 
    public boolean givesCheck(Piece piece, Piece king){
-      for(var direction : piece.getDirections().stream()
-              .filter(d -> d.canMove(Direction.CAPTURE_MOVE) && d.contains(king.getPosition())).collect(Collectors.toList())){
+      for(var direction : piece.getMoves().stream()
+              .filter(d -> d.moveTypes().contains(MoveType.CAPTURE) && d.contains(king.getPosition())).collect(Collectors.toList())){
          for(var pos : direction.getPositions()){
             var otherPiece = getPieceByPosition(pos);
             if(otherPiece == null)

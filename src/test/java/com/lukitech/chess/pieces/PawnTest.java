@@ -4,6 +4,7 @@ import com.lukitech.chess.board.Board;
 import com.lukitech.chess.board.Position;
 import com.lukitech.chess.board.StandardBoard;
 import com.lukitech.chess.board.StandardPieceSet;
+import com.lukitech.chess.moves.MoveResult;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -24,20 +25,20 @@ public class PawnTest {
         //Blocked own piece
         board.addPiece(new Pawn(Color.WHITE, destination));
         var moveResult = pawn.move(destination);
-        Assertions.assertEquals(false, moveResult.result);
+        Assertions.assertEquals(MoveResult.MoveBlocked, moveResult, moveResult.getMessage());
         Assertions.assertEquals(pawn.getPosition(), startPosition);
         board.removePieceFromPosition(destination);
 
-        //Blocked own piece
+        //Blocked by other piece
         board.addPiece(new Pawn(Color.BLACK, destination));
         moveResult = pawn.move(destination);
-        Assertions.assertEquals(false, moveResult.result);
+        Assertions.assertEquals(MoveResult.NotCaptureMove, moveResult, moveResult.getMessage());
         Assertions.assertEquals(pawn.getPosition(), startPosition);
         board.removePieceFromPosition(destination);
 
         //Moved
         moveResult = pawn.move(destination);
-        Assertions.assertEquals(true, moveResult.result);
+        Assertions.assertEquals(MoveResult.Move, moveResult, moveResult.getMessage());
         Assertions.assertEquals(pawn.getPosition(), destination);
     }
     @Test
@@ -51,20 +52,20 @@ public class PawnTest {
         //Blocked by own piece
         board.addPiece(new Pawn(Color.WHITE, halfWayPosition));
         var moveResult = pawn.move(destination);
-        Assertions.assertEquals(false, moveResult.result);
+        Assertions.assertEquals(MoveResult.MoveBlocked, moveResult);
         Assertions.assertEquals(pawn.getPosition(), startPosition);
         board.removePieceFromPosition(halfWayPosition);
 
         //Blocked by opponent piece
         board.addPiece(new Pawn(Color.BLACK, halfWayPosition));
         moveResult = pawn.move(destination);
-        Assertions.assertEquals(false, moveResult.result);
+        Assertions.assertEquals(MoveResult.MoveBlocked, moveResult);
         Assertions.assertEquals(pawn.getPosition(), startPosition);
         board.removePieceFromPosition(halfWayPosition);
 
         //Moved
         moveResult = pawn.move(destination);
-        Assertions.assertEquals(true, moveResult.result);
+        Assertions.assertEquals(MoveResult.Move, moveResult);
         Assertions.assertEquals(pawn.getPosition(), destination);
     }
 
@@ -77,17 +78,23 @@ public class PawnTest {
         var pawn = board.getPieceByPosition(originalPosition);
         pawn.move(movePosition);
 
-        board.addPiece(new Pawn(Color.WHITE, capturePosition));
+        //No piece to capture
         var moveResult = pawn.move(capturePosition);
-
-        Assertions.assertEquals(false, moveResult.result, moveResult.message);
+        Assertions.assertEquals(MoveResult.CaptureMoveOnly, moveResult);
         Assertions.assertEquals(movePosition, pawn.getPosition());
 
+        //Friendly piece
+        board.addPiece(new Pawn(Color.WHITE, capturePosition));
+        moveResult = pawn.move(capturePosition);
+        Assertions.assertEquals(MoveResult.MoveBlocked, moveResult, moveResult.getMessage());
+        Assertions.assertEquals(movePosition, pawn.getPosition());
         board.removePieceFromPosition(capturePosition);
+
+        //Capture
         var capturedPawn = board.addPiece(new Pawn(Color.BLACK, capturePosition));
         moveResult = pawn.move(capturePosition);
 
-        Assertions.assertEquals(true, moveResult.result, moveResult.message);
+        Assertions.assertEquals(MoveResult.Capture, moveResult);
         Assertions.assertEquals(capturePosition, pawn.getPosition());
         Assertions.assertEquals(false, board.getPieces().contains(capturedPawn));
         Assertions.assertEquals(true, board.getPieces().contains(pawn));
@@ -105,11 +112,11 @@ public class PawnTest {
         whitePawn.setPosition(new Position(7, 4));
 
         var moveResult = whitePawn.move(new Position(7,5));
-        Assertions.assertEquals(false, moveResult.result);
+        Assertions.assertEquals(MoveResult.AllowCheck, moveResult);
 
         //Remove threat
         board.removePiece(blackQueen);
         moveResult = whitePawn.move(new Position(7,5));
-        Assertions.assertEquals(true, moveResult.result);
+        Assertions.assertEquals(MoveResult.Move, moveResult);
     }
 }

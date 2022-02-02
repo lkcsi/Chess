@@ -24,7 +24,7 @@ public class Chess
 				break;
 
 			var moveResult = interpeter.processMove(pattern);
-			System.out.println(moveResult.getMessage());
+			System.out.println(moveResult);
 			System.out.println(System.in);
 			printer.print(board);
 		}
