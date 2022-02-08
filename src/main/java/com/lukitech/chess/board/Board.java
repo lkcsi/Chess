@@ -4,12 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.lukitech.chess.moves.MoveType;
 import com.lukitech.chess.pieces.CheckMateable;
 import com.lukitech.chess.pieces.Color;
 import com.lukitech.chess.pieces.Piece;
 
-public abstract class Board {
+public class Board {
 
    private List<Piece> pieces = new ArrayList<>();
    private Color colorToMove = Color.WHITE;
@@ -28,7 +27,6 @@ public abstract class Board {
 		if(pieces.stream().anyMatch(p -> p.getPosition().equals(piece.getPosition())))
          throw new RuntimeException("Position: " + piece.getPosition().toString() + " is already occupied by other piece");
 
-      piece.setBoard(this);
       pieces.add(piece);
       return  piece;
 	}
@@ -69,14 +67,14 @@ public abstract class Board {
    }
 
    public boolean inCheck(Color color){
-      var king = pieces.stream()
+      var king = getPieces().stream()
               .filter(p -> p instanceof CheckMateable && p.getColor() == color)
               .findAny().orElseGet(null);
 
       if(king == null)
          return false;
 
-      var opponents = pieces.stream().filter(p -> p.getColor() != color).collect(Collectors.toList());
+      var opponents = getPieces().stream().filter(p -> p.getColor() != color).collect(Collectors.toList());
       for (var piece : opponents){
          if(givesCheck(piece, king)){
             return true;
@@ -85,10 +83,13 @@ public abstract class Board {
       return false;
    }
 
-   public boolean givesCheck(Piece piece, Piece king){
-      for(var direction : piece.getMoves().stream()
-              .filter(d -> d.moveTypes().contains(MoveType.CAPTURE) && d.contains(king.getPosition())).collect(Collectors.toList())){
-         for(var pos : direction.getPositions()){
+   private boolean givesCheck(Piece piece, Piece king){
+      for(var move : piece.getMoves()){
+         var positions = move.getPositions(piece.getPosition());
+         if(!positions.contains(king.getPosition()))
+            continue;
+
+         for(var pos : positions){
             var otherPiece = getPieceByPosition(pos);
             if(otherPiece == null)
                continue;

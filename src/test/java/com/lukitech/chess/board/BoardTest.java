@@ -10,7 +10,7 @@ public class BoardTest {
     Board board;
     @BeforeEach
     public void setup(){
-        board = new StandardBoard(new StandardPieceSet());
+        board = new Board(new StandardPieceSet());
     }
 
     @Test

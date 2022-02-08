@@ -1,40 +1,53 @@
 package com.lukitech.chess.moves;
 
+
 import com.lukitech.chess.board.Position;
+import com.lukitech.chess.pieces.Piece;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.EnumSet;
 
 public class Move {
-   private ArrayList<Position> positions;
-   private EnumSet<MoveType> moveTypes;
+   private MoveVector moveVector;
+   private SpecialAction specialAction;
+   private SpecialCondition specialCondition;
+   private MoveType moveType;
 
-   public Move(EnumSet<MoveType> moveTypes){
-      positions = new ArrayList<>();
-      this.moveTypes = EnumSet.noneOf(MoveType.class);
-      this.moveTypes.addAll(moveTypes);
-   }
-
-   public Move(Position position, EnumSet<MoveType> moveTypes){
-      this(moveTypes);
-      positions.add(position);
+   public Move(MoveVector moveVector, MoveType moveType){
+      this.moveType = moveType;
+      this.moveVector = moveVector;
    }
 
-   public EnumSet<MoveType> moveTypes(){
-      return moveTypes;
+   public ArrayList<Position> getPositions(Position position){
+      var result = new ArrayList<Position>();
+      int col = position.getColumn() + moveVector.getColStep();
+      int row = position.getRow() + moveVector.getRowStep();
+
+      while(col < 9 && row < 9 && col > 0 && row > 0 && result.size() < moveVector.getStepCount()){
+         result.add(new Position(col, row));
+         col = col + moveVector.getColStep();
+         row = row + moveVector.getRowStep();
+      }
+      return result;
    }
 
-   public void addPosition(Position position){
-      positions.add(position);
+   public void setSpecialAction(SpecialAction specialAction) {
+      this.specialAction = specialAction;
    }
-   public ArrayList<Position> getPositions(){
-      return positions;
+   public  void setSpecialCondition(SpecialCondition specialCondition) {
+      this.specialCondition = specialCondition;
    }
-   public boolean contains(Position position){
-      return positions.stream().anyMatch(p -> p.equals(position));
+   public SpecialAction getSpecialAction() {
+      return specialAction;
    }
-   public int size() {
-      return positions.size();
+   public SpecialCondition getSpecialCondition() {
+      return specialCondition;
+   }
+
+   public MoveVector getMoveVector() {
+      return moveVector;
+   }
+
+   public MoveType getMoveType() {
+      return moveType;
    }
 }

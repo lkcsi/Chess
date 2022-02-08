@@ -8,6 +8,7 @@ import com.lukitech.chess.moves.Move;
 import com.lukitech.chess.board.Position;
 import com.lukitech.chess.moves.MoveFactory;
 import com.lukitech.chess.moves.MoveType;
+import com.lukitech.chess.moves.MoveVector;
 
 public class Bishop extends Piece{
 
@@ -21,19 +22,10 @@ public class Bishop extends Piece{
    }
 
    @Override
-   public List<Move> getMoves() {
-      List<Move> directions = new ArrayList<>();
-      directions.addAll(getDirections(getPosition()));
-      return directions;
-   }
-
-   public static List<Move> getDirections(Position position){
-      var moves = new ArrayList<Move>();
-      var set = EnumSet.of(MoveType.MOVE, MoveType.CAPTURE);
-      moves.add(MoveFactory.getDirection(position, -1, -1, set));
-      moves.add(MoveFactory.getDirection(position,  1, -1, set));
-      moves.add(MoveFactory.getDirection(position, -1,  1, set));
-      moves.add(MoveFactory.getDirection(position,  1,  1, set));
-      return moves;
+   public void addMoves(){
+      addMove(new Move(new MoveVector(-1,-1,10), MoveType.NORMAL));
+      addMove(new Move(new MoveVector(1,-1,10), MoveType.NORMAL));
+      addMove(new Move(new MoveVector(-1,1,10), MoveType.NORMAL));
+      addMove(new Move(new MoveVector(1,1,10), MoveType.NORMAL));
    }
 }

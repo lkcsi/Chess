@@ -3,6 +3,7 @@ package com.lukitech.chess.interpreter;
 import com.lukitech.chess.board.Board;
 import com.lukitech.chess.board.Position;
 import com.lukitech.chess.moves.MoveType;
+import com.lukitech.chess.pieces.Piece;
 
 import java.util.EnumSet;
 import java.util.regex.Matcher;
@@ -12,6 +13,8 @@ import java.util.stream.Collectors;
 public class Algebratic implements Interpreter{
 
     private final Board board;
+    private Piece piece;
+    private Position position;
     private Pattern pattern = Pattern.compile("([A-Z])?([a-h])?([1-8])?(x)?([a-h])([1-8])");
 
     public Algebratic(Board board){
@@ -20,6 +23,9 @@ public class Algebratic implements Interpreter{
 
     @Override
     public boolean processMove(String move) {
+        piece = null;
+        position = null;
+
         Matcher matcher = pattern.matcher(move);
 
         if(!matcher.matches())
@@ -55,19 +61,27 @@ public class Algebratic implements Interpreter{
             return false;
         int row = Integer.parseInt(destinationRow);
 
-        Position destination = new Position(column, row);
+        position = new Position(column, row);
 
         if(captureMark == null)
-            pieces = pieces.stream().filter(p -> p.getMoves().stream().anyMatch(d -> d.contains(destination) && !d.moveTypes().equals(EnumSet.of(MoveType.CAPTURE)))).collect(Collectors.toList());
+            pieces = pieces.stream().filter(p -> p.getMoves().stream().anyMatch(m -> m.getPositions(p.getPosition()).contains(position) && m.getMoveType() != MoveType.CAPTURE_ONLY)).collect(Collectors.toList());
         else
-            pieces = pieces.stream().filter(p -> p.getMoves().stream().anyMatch(d -> d.contains(destination) && d.moveTypes().contains(MoveType.CAPTURE))).collect(Collectors.toList());
+            pieces = pieces.stream().filter(p -> p.getMoves().stream().anyMatch(m -> m.getPositions(p.getPosition()).contains(position) && m.getMoveType() != MoveType.MOVE_ONLY)).collect(Collectors.toList());
 
-        if(pieces.size() == 0)
+        if(pieces.size() != 1)
             return false;
 
-        if(pieces.size() > 1)
-            return false;
+        piece = pieces.get(0);
+        return  true;
+    }
 
-        return pieces.get(0).move(destination).getResult();
+    @Override
+    public Piece getPiece() {
+        return null;
+    }
+
+    @Override
+    public Position getPosition() {
+        return null;
     }
 }

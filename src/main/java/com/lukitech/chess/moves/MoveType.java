@@ -1,5 +1,5 @@
 package com.lukitech.chess.moves;
 
 public enum MoveType {
-    JUMP, CAPTURE, MOVE
+    NORMAL, MOVE_ONLY, CAPTURE_ONLY
 }

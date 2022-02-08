@@ -8,6 +8,7 @@ import com.lukitech.chess.moves.Move;
 import com.lukitech.chess.board.Position;
 import com.lukitech.chess.moves.MoveFactory;
 import com.lukitech.chess.moves.MoveType;
+import com.lukitech.chess.moves.MoveVector;
 
 public class Knight extends Piece
 {
@@ -21,19 +22,15 @@ public class Knight extends Piece
    }
 
    @Override
-   public List<Move> getMoves() {
-      var moves = new ArrayList<Move>();
-      var set = EnumSet.of(MoveType.MOVE, MoveType.CAPTURE);
-      moves.add(MoveFactory.getDirection( getPosition(),  1, 2, 1, set));
-      moves.add(MoveFactory.getDirection( getPosition(),  1, -2, 1, set));
-      moves.add(MoveFactory.getDirection( getPosition(),  -1, 2, 1, set));
-      moves.add(MoveFactory.getDirection( getPosition(),  -1, -2, 1, set));
+   public void addMoves() {
+      addMove(new Move(new MoveVector(1,2,1), MoveType.NORMAL));
+      addMove(new Move(new MoveVector(1,-2,1), MoveType.NORMAL));
+      addMove(new Move(new MoveVector(-1,2,1), MoveType.NORMAL));
+      addMove(new Move(new MoveVector(-1,-2,1), MoveType.NORMAL));
 
-      moves.add(MoveFactory.getDirection( getPosition(),  2, 1, 1, set));
-      moves.add(MoveFactory.getDirection( getPosition(),  2, -1, 1, set));
-      moves.add(MoveFactory.getDirection( getPosition(),  -2, 1, 1, set));
-      moves.add(MoveFactory.getDirection( getPosition(),  -2, -1, 1, set));
-
-      return moves;
+      addMove(new Move(new MoveVector(2,1,1), MoveType.NORMAL));
+      addMove(new Move(new MoveVector(2,-1,1), MoveType.NORMAL));
+      addMove(new Move(new MoveVector(-2,1,1), MoveType.NORMAL));
+      addMove(new Move(new MoveVector(-2,-1,1), MoveType.NORMAL));
    }
 }

@@ -5,6 +5,8 @@ import java.util.List;
 
 import com.lukitech.chess.moves.Move;
 import com.lukitech.chess.board.Position;
+import com.lukitech.chess.moves.MoveType;
+import com.lukitech.chess.moves.MoveVector;
 
 public class Queen extends Piece {
 
@@ -18,13 +20,14 @@ public class Queen extends Piece {
    }
 
    @Override
-   public List<Move> getMoves() {
-      var moves = new ArrayList<Move>();
-      moves.addAll(Bishop.getDirections(getPosition()));
-      moves.addAll(Rook.getDirections(getPosition()));
-      return moves;
+   public void addMoves() {
+      addMove(new Move(new MoveVector(1,1,10), MoveType.NORMAL));
+      addMove(new Move(new MoveVector(1,-1,10), MoveType.NORMAL));
+      addMove(new Move(new MoveVector(1,0,10), MoveType.NORMAL));
+      addMove(new Move(new MoveVector(-1,1,10), MoveType.NORMAL));
+      addMove(new Move(new MoveVector(-1,-1,10), MoveType.NORMAL));
+      addMove(new Move(new MoveVector(-1,0,10), MoveType.NORMAL));
+      addMove(new Move(new MoveVector(0,1,10), MoveType.NORMAL));
+      addMove(new Move(new MoveVector(0,-1,10), MoveType.NORMAL));
    }
-
-
-
 }

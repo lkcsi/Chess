@@ -1,25 +1,28 @@
 package com.lukitech.chess.pieces;
 
-import java.util.ArrayList;
-import java.util.EnumSet;
-import java.util.List;
-
-import com.lukitech.chess.moves.Move;
+import com.lukitech.chess.board.Board;
+import com.lukitech.chess.moves.*;
 import com.lukitech.chess.board.Position;
-import com.lukitech.chess.moves.MoveFactory;
-import com.lukitech.chess.moves.MoveType;
 
 public class Pawn extends Piece {
 
-   private boolean enPassant;
+   private boolean jumped;
 
    public Pawn(Color color, Position position) {
-      super("Pawn.json", color, position);
-      enPassant = false;
+      super("Pawn", color, position);
+      addMoves();
    }
 
-   public boolean enPassantAvailable(){
-      return enPassant;
+   public boolean jumped(){
+      return jumped;
+   }
+   public void setJumped(){
+      jumped = true;
+   }
+
+   @Override
+   public void update(){
+      jumped = false;
    }
 
    @Override
@@ -27,20 +30,72 @@ public class Pawn extends Piece {
       return "P";
    }
 
-   @Override
-   public List<Move> getMoves() {
-      var moves = new ArrayList<Move>();
-      int row = getPosition().getRow();
+   public void addMoves() {
       int dir = getColor() == Color.BLACK ? -1 : 1;
 
-      if((Color.BLACK == getColor() && row == 7) || Color.WHITE == getColor() && row == 2){
-         moves.add(MoveFactory.getDirection(getPosition(), 0, 1 * dir, 2, EnumSet.of(MoveType.MOVE)));
-      }
-      moves.add(MoveFactory.getDirection(getPosition(), 0, 1 * dir, 1, EnumSet.of(MoveType.MOVE)));
+      var move = new Move(new MoveVector(0, 1 * dir, 1), MoveType.MOVE_ONLY);
+      addMove(move);
 
-      moves.add(MoveFactory.getDirection(getPosition(),  1, 1 * dir, 1, EnumSet.of(MoveType.CAPTURE)));
-      moves.add(MoveFactory.getDirection(getPosition(), -1, 1 * dir, 1, EnumSet.of(MoveType.CAPTURE)));
-      
-      return moves;
+      move = new Move(new MoveVector(0, 1 * dir, 2), MoveType.MOVE_ONLY);
+      move.setSpecialCondition(jumpCondition);
+      move.setSpecialAction(jumpAction);
+      addMove(move);
+
+      addMove(new Move(new MoveVector(1, 1 * dir, 1), MoveType.CAPTURE_ONLY));
+      addMove(new Move(new MoveVector(-1, 1 * dir, 1), MoveType.CAPTURE_ONLY));
+
+      move = new Move(new MoveVector(1, 1 * dir, 1), MoveType.MOVE_ONLY);
+      move.setSpecialAction(enPassantAction);
+      move.setSpecialCondition(enPassantCondition);
+
+      move = new Move(new MoveVector(-1, 1 * dir, 1), MoveType.MOVE_ONLY);
+      move.setSpecialAction(enPassantAction);
+      move.setSpecialCondition(enPassantCondition);
    }
+
+   SpecialCondition jumpCondition = new SpecialCondition() {
+      @Override
+      public boolean check(Piece piece, Board board) {
+         return (piece.getPosition().getRow() == 2 && piece.getColor() == Color.WHITE) ||
+                 (piece.getPosition().getRow() == 7 && piece.getColor() == Color.BLACK);
+      }
+   };
+
+   SpecialAction jumpAction = new SpecialAction() {
+      @Override
+      public void perform(Piece piece, Board board) {
+         Pawn pawn = (Pawn) piece;
+         pawn.setJumped();
+      }
+   };
+
+   SpecialCondition enPassantCondition = new SpecialCondition() {
+      @Override
+      public boolean check(Piece piece, Board board) {
+         if(!(piece.getPosition().getRow() == 5 && piece.getColor() == Color.WHITE) ||
+                 !(piece.getPosition().getRow() == 4 && piece.getColor() == Color.BLACK))
+            return false;
+
+         return (board.getPieces().stream().anyMatch((p) -> {
+            Pawn pawn = (Pawn) p;
+            return pawn.getPosition().getRow() == piece.getPosition().getRow()
+               && Math.abs(pawn.getPosition().getColumn() - piece.getPosition().getColumn()) == 1
+               && pawn.jumped();
+           }));
+      }
+   };
+
+   SpecialAction enPassantAction = new SpecialAction() {
+      @Override
+      public void perform(Piece piece, Board board) {
+         var capturedPiece = board.getPieces().stream().filter( (p) -> {
+              Pawn pawn = (Pawn) p;
+              return pawn.getPosition().getRow() == piece.getPosition().getRow()
+                      && Math.abs(pawn.getPosition().getColumn() - piece.getPosition().getColumn()) == 1
+                      && pawn.jumped();
+           }).findFirst().get();
+
+         board.capture(capturedPiece);
+      }
+   };
 }

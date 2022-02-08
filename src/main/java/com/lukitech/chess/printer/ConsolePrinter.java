@@ -8,7 +8,7 @@ import com.lukitech.chess.pieces.*;
 public class ConsolePrinter implements Printer{
 
    @Override
-   public void print(StandardBoard board) {
+   public void print(Board board) {
       
       
       for(int row = 8; row >= 1; row--){
