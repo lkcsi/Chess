@@ -1,5 +1,6 @@
 package com.lukitech.chess;
 import com.lukitech.chess.interpreter.Algebratic;
+import com.lukitech.chess.moves.MoveResult;
 import com.lukitech.chess.printer.ConsolePrinter;
 import com.lukitech.chess.board.*;
 import com.lukitech.chess.pieces.Color;
@@ -23,8 +24,8 @@ public class Chess
 			if(pattern.equalsIgnoreCase("exit"))
 				break;
 
-			var moveResult = interpeter.processMove(pattern);
-			System.out.println(System.in);
+			var moveResult = interpeter.move(pattern);
+			System.out.println(moveResult.getMessage());
 			printer.print(board);
 		}
 	}

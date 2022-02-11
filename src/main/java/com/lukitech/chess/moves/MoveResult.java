@@ -8,6 +8,7 @@ public class MoveResult {
    public static final MoveResult AllowCheck = new MoveResult(false, "This move results check to own king");
    public static final MoveResult Move = new MoveResult(true, "Move");
    public static final MoveResult NotYourTurn = new MoveResult(true, "Not your turn");
+   public static final MoveResult Ambigous = new MoveResult(false, "Ambigous move");
 
 
    private boolean result;

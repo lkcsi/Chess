@@ -2,6 +2,8 @@ package com.lukitech.chess.interpreter;
 
 import com.lukitech.chess.board.Board;
 import com.lukitech.chess.board.Position;
+import com.lukitech.chess.moves.MovePerformer;
+import com.lukitech.chess.moves.MoveResult;
 import com.lukitech.chess.moves.MoveType;
 import com.lukitech.chess.pieces.Piece;
 
@@ -13,23 +15,25 @@ import java.util.stream.Collectors;
 public class Algebratic implements Interpreter{
 
     private final Board board;
+    private final MovePerformer movePerformer;
     private Piece piece;
     private Position position;
     private Pattern pattern = Pattern.compile("([A-Z])?([a-h])?([1-8])?(x)?([a-h])([1-8])");
 
     public Algebratic(Board board){
         this.board = board;
+        movePerformer = new MovePerformer(board);
     }
 
     @Override
-    public boolean processMove(String move) {
+    public MoveResult move(String move) {
         piece = null;
         position = null;
 
         Matcher matcher = pattern.matcher(move);
 
         if(!matcher.matches())
-            return false;
+            return MoveResult.Ambigous;
 
         String pieceLetter = matcher.group(1);
         String pieceColumn = matcher.group(2);
@@ -54,25 +58,21 @@ public class Algebratic implements Interpreter{
         }
 
         if(destinationColumn == null)
-            return false;
+            return MoveResult.Ambigous;
         int column = (destinationColumn.charAt(0) - 'a') + 1;
 
         if(destinationRow == null)
-            return false;
+            return MoveResult.Ambigous;
         int row = Integer.parseInt(destinationRow);
 
         position = new Position(column, row);
 
-        //if(captureMark == null)
-            //pieces = pieces.stream().filter(p -> p.getMoves().stream().anyMatch(m -> m.getPositions(p.getPosition()).contains(position) && m.getMoveType() != MoveType.CAPTURE_ONLY)).collect(Collectors.toList());
-        //else
-            //pieces = pieces.stream().filter(p -> p.getMoves().stream().anyMatch(m -> m.getPositions(p.getPosition()).contains(position) && m.getMoveType() != MoveType.MOVE_ONLY)).collect(Collectors.toList());
+        pieces = pieces.stream().filter(p -> p.getMoves(board).stream().anyMatch(m -> m.getPosition().equals(position))).collect(Collectors.toList());
 
         if(pieces.size() != 1)
-            return false;
+            return MoveResult.Ambigous;
 
-        piece = pieces.get(0);
-        return  true;
+        return movePerformer.move(position, pieces.get(0));
     }
 
     @Override
