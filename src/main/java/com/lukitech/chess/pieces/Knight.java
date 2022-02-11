@@ -4,11 +4,9 @@ import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 
-import com.lukitech.chess.moves.Move;
+import com.lukitech.chess.board.Board;
+import com.lukitech.chess.moves.*;
 import com.lukitech.chess.board.Position;
-import com.lukitech.chess.moves.MoveFactory;
-import com.lukitech.chess.moves.MoveType;
-import com.lukitech.chess.moves.MoveVector;
 
 public class Knight extends Piece
 {
@@ -17,20 +15,24 @@ public class Knight extends Piece
 	}
 
    @Override
-   public String getLetter() {
-      return "N";
+   public List<Move> getMoves(Board board) {
+      List<Move> moves = new ArrayList<>();
+      MoveFactory positionFactory = new MoveFactory(this, board);
+      moves.addAll(positionFactory.getMoves(1,2,1));
+      moves.addAll(positionFactory.getMoves(1,-2,1));
+      moves.addAll(positionFactory.getMoves(-1,2,1));
+      moves.addAll(positionFactory.getMoves(-1,-2,1));
+
+      moves.addAll(positionFactory.getMoves(2,1,1));
+      moves.addAll(positionFactory.getMoves(2,-1,1));
+      moves.addAll(positionFactory.getMoves(-2,1,1));
+      moves.addAll(positionFactory.getMoves(-2,-1,1));
+
+      return moves;
    }
 
    @Override
-   public void addMoves() {
-      addMove(new Move(new MoveVector(1,2,1), MoveType.NORMAL));
-      addMove(new Move(new MoveVector(1,-2,1), MoveType.NORMAL));
-      addMove(new Move(new MoveVector(-1,2,1), MoveType.NORMAL));
-      addMove(new Move(new MoveVector(-1,-2,1), MoveType.NORMAL));
-
-      addMove(new Move(new MoveVector(2,1,1), MoveType.NORMAL));
-      addMove(new Move(new MoveVector(2,-1,1), MoveType.NORMAL));
-      addMove(new Move(new MoveVector(-2,1,1), MoveType.NORMAL));
-      addMove(new Move(new MoveVector(-2,-1,1), MoveType.NORMAL));
+   public String getLetter() {
+      return "N";
    }
 }

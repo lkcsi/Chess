@@ -23,12 +23,12 @@ public class PawnTest extends PieceTest{
 
         //Blocked own piece
         board.addPiece(new Pawn(Color.WHITE, destination));
-        assertMove(pawn, destination, startPosition, MoveResult.MoveBlocked);
+        assertMove(pawn, destination, startPosition, MoveResult.NotValidMove);
         board.removePieceFromPosition(destination);
 
         //Blocked by other piece
         board.addPiece(new Pawn(Color.BLACK, destination));
-        assertMove(pawn, destination, startPosition, MoveResult.MoveBlocked);
+        assertMove(pawn, destination, startPosition, MoveResult.NotValidMove);
         board.removePieceFromPosition(destination);
 
         //Moved
@@ -41,12 +41,12 @@ public class PawnTest extends PieceTest{
 
         //Blocked by own piece
         board.addPiece(new Pawn(Color.WHITE, halfWayPosition));
-        assertMove(pawn, destination, startPosition, MoveResult.MoveBlocked);
+        assertMove(pawn, destination, startPosition, MoveResult.NotValidMove);
         board.removePieceFromPosition(halfWayPosition);
 
         //Blocked by opponent piece
         board.addPiece(new Pawn(Color.BLACK, halfWayPosition));
-        assertMove(pawn, destination, startPosition, MoveResult.MoveBlocked);
+        assertMove(pawn, destination, startPosition, MoveResult.NotValidMove);
         board.removePieceFromPosition(halfWayPosition);
 
         //Moved
@@ -58,16 +58,14 @@ public class PawnTest extends PieceTest{
         var movePosition = new Position(1,4);
         var capturePosition = new Position(2,5);
 
-        movePerformer.move(movePosition, pawn);
+        pawn.setPosition(movePosition);
 
         //No piece to capture
-        var moveResult = movePerformer.move(capturePosition, pawn);
-        Assertions.assertEquals(MoveResult.WrongDirection, moveResult);
-        Assertions.assertEquals(movePosition, pawn.getPosition());
+        assertMove(pawn, capturePosition, movePosition, MoveResult.NotValidMove);
 
         //Friendly piece
         board.addPiece(new Pawn(Color.WHITE, capturePosition));
-        assertMove(pawn, capturePosition, movePosition, MoveResult.MoveBlocked);
+        assertMove(pawn, capturePosition, movePosition, MoveResult.NotValidMove);
         board.removePieceFromPosition(capturePosition);
 
         //Capture
@@ -96,5 +94,25 @@ public class PawnTest extends PieceTest{
         //Remove threat
         board.removePiece(blackQueen);
         assertMove(pawn, movePosition, movePosition, MoveResult.Move);
+    }
+
+    @Test
+    void enPassant(){
+        var enPassantStart = new Position(4,5);
+        var enPassantEndPos = new Position(5,6);
+
+        var blackPawnPos = new Position(5,7);
+        var jumpPos = new Position(5,5);
+
+        var blackPawn = board.getPieceByPosition(blackPawnPos);
+
+        pawn.setPosition(enPassantStart);
+
+        assertMove(pawn, enPassantEndPos, enPassantStart, MoveResult.NotValidMove);
+        board.endTurn();
+
+        assertMove(blackPawn, jumpPos, jumpPos, MoveResult.Move);
+
+        assertMove(pawn, enPassantEndPos, enPassantEndPos, MoveResult.Move);
     }
 }

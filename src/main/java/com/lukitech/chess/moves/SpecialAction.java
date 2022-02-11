@@ -5,5 +5,5 @@ import com.lukitech.chess.pieces.Piece;
 
 @FunctionalInterface
 public interface SpecialAction{
-    void perform(Piece piece, Board board);
+    void perform();
 }

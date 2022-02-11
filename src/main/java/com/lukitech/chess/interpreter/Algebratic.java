@@ -63,10 +63,10 @@ public class Algebratic implements Interpreter{
 
         position = new Position(column, row);
 
-        if(captureMark == null)
-            pieces = pieces.stream().filter(p -> p.getMoves().stream().anyMatch(m -> m.getPositions(p.getPosition()).contains(position) && m.getMoveType() != MoveType.CAPTURE_ONLY)).collect(Collectors.toList());
-        else
-            pieces = pieces.stream().filter(p -> p.getMoves().stream().anyMatch(m -> m.getPositions(p.getPosition()).contains(position) && m.getMoveType() != MoveType.MOVE_ONLY)).collect(Collectors.toList());
+        //if(captureMark == null)
+            //pieces = pieces.stream().filter(p -> p.getMoves().stream().anyMatch(m -> m.getPositions(p.getPosition()).contains(position) && m.getMoveType() != MoveType.CAPTURE_ONLY)).collect(Collectors.toList());
+        //else
+            //pieces = pieces.stream().filter(p -> p.getMoves().stream().anyMatch(m -> m.getPositions(p.getPosition()).contains(position) && m.getMoveType() != MoveType.MOVE_ONLY)).collect(Collectors.toList());
 
         if(pieces.size() != 1)
             return false;

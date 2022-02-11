@@ -20,16 +20,19 @@ public class BishopTest extends PieceTest{
         var blockPosition = new Position(4,2);
         var movePosition = new Position(6,4);
 
-        assertMove(bishop, movePosition, startPosition, MoveResult.MoveBlocked);
+        assertMove(bishop, movePosition, startPosition, MoveResult.NotValidMove);
 
         board.removePieceFromPosition(blockPosition);
         assertMove(bishop, movePosition, movePosition, MoveResult.Move);
+        board.endTurn();
 
         movePosition = new Position(4,2);
         assertMove(bishop, movePosition, movePosition, MoveResult.Move);
+        board.endTurn();
 
         movePosition = new Position(2,4);
         assertMove(bishop, movePosition, movePosition, MoveResult.Move);
+        board.endTurn();
 
         movePosition = new Position(3,3);
         assertMove(bishop, movePosition, movePosition, MoveResult.Move);

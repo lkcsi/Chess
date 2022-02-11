@@ -13,6 +13,10 @@ public class Board {
    private List<Piece> pieces = new ArrayList<>();
    private Color colorToMove = Color.WHITE;
 
+   public Board(){
+
+   }
+
    public Board(PieceSet pieceSet){
         pieceSet.getPieces(Color.WHITE).forEach(p -> addPiece(p));
         pieceSet.getPieces(Color.BLACK).forEach(p -> addPiece(p));
@@ -24,7 +28,7 @@ public class Board {
    }
 
 	public Piece addPiece(Piece piece){
-		if(pieces.stream().anyMatch(p -> p.getPosition().equals(piece.getPosition())))
+     if(pieces.stream().anyMatch(p -> p.getPosition().equals(piece.getPosition())))
          throw new RuntimeException("Position: " + piece.getPosition().toString() + " is already occupied by other piece");
 
       pieces.add(piece);
@@ -55,7 +59,14 @@ public class Board {
    }
 
    public void endTurn(){
-      colorToMove = colorToMove == Color.WHITE ? Color.BLACK : Color.WHITE;
+      if(colorToMove == Color.WHITE){
+         pieces.stream().filter(p -> p.getColor() == Color.BLACK).forEach(p -> p.update());
+         colorToMove =  Color.BLACK;
+      }
+      else{
+         pieces.stream().filter(p -> p.getColor() == Color.WHITE).forEach(p -> p.update());
+         colorToMove = Color.WHITE;
+      }
    }
 
    public Color getColorToMove(){
@@ -76,28 +87,16 @@ public class Board {
 
       var opponents = getPieces().stream().filter(p -> p.getColor() != color).collect(Collectors.toList());
       for (var piece : opponents){
-         if(givesCheck(piece, king)){
+         if(piece.getMoves(this).stream().anyMatch(m -> m.getPosition().equals(king.getPosition()))){
             return true;
          }
       }
       return false;
    }
 
-   private boolean givesCheck(Piece piece, Piece king){
-      for(var move : piece.getMoves()){
-         var positions = move.getPositions(piece.getPosition());
-         if(!positions.contains(king.getPosition()))
-            continue;
-
-         for(var pos : positions){
-            var otherPiece = getPieceByPosition(pos);
-            if(otherPiece == null)
-               continue;
-            if(otherPiece.equals(king))
-               return true;
-            break;
-         }
-      }
-      return false;
+   public Board copy(){
+      Board board = new Board();
+      pieces.forEach(p -> board.pieces.add(p));
+      return board;
    }
 }

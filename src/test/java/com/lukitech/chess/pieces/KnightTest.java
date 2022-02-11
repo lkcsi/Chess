@@ -25,12 +25,16 @@ public class KnightTest extends PieceTest{
         //Blocked
         var pawn = new Pawn(Color.WHITE, movePosition1);
         board.addPiece(pawn);
-        assertMove(knight, movePosition1, startPosition, MoveResult.MoveBlocked);
+        assertMove(knight, movePosition1, startPosition, MoveResult.NotValidMove);
 
         //Move
         board.removePieceFromPosition(movePosition1);
         assertMove(knight, movePosition1, movePosition1, MoveResult.Move);
+        board.endTurn();
+
         assertMove(knight, startPosition, startPosition, MoveResult.Move);
+        board.endTurn();
+
         assertMove(knight, movePosition2, movePosition2, MoveResult.Move);
     }
 

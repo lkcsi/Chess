@@ -26,4 +26,10 @@ public abstract class PieceTest {
         Assertions.assertEquals(expectedPosition, piece.getPosition());
     }
 
+    public void assertMove(Piece piece, Position movePosition, MoveResult expectedResult){
+
+        var moveResult = movePerformer.move(movePosition, piece);
+        Assertions.assertEquals(expectedResult, moveResult, moveResult.getMessage());
+        Assertions.assertEquals(movePosition, piece.getPosition());
+    }
 }

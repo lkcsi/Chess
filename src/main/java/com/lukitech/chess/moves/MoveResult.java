@@ -4,16 +4,16 @@ import java.util.Objects;
 
 public class MoveResult {
 
-   public static final MoveResult MoveBlocked = new MoveResult(false,"Move blocked");
-   public static final MoveResult WrongDirection = new MoveResult(false, "Wrong direction");
+   public static final MoveResult NotValidMove = new MoveResult(false, "No a valid move");
    public static final MoveResult AllowCheck = new MoveResult(false, "This move results check to own king");
    public static final MoveResult Move = new MoveResult(true, "Move");
-   public static final MoveResult WrongConditions = new MoveResult(false, "Wrong conditions");
+   public static final MoveResult NotYourTurn = new MoveResult(true, "Not your turn");
 
-    private boolean result;
+
+   private boolean result;
    private String message;
 
-   private MoveResult(boolean result, String message){
+   public MoveResult(boolean result, String message){
       this.result = result;
       this.message = message;
    }
